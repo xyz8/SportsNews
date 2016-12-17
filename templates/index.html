@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block scripts %}
+<script>
+    function query(){
+        val=$("#input").val();
+        window.location.href="/query/"+val;
+    }
+
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-md-10">
+            <div class="input-group">
+                <input id="input" type="text" class="form-control" value="{{ query }}">
+                <span class="input-group-btn">
+                      <button id="button" class="btn btn-default" type="button" onclick="query()">搜索</button>
+                    </span>
+            </div>
+            <div class="input-group">
+                <a href="/query/{{ query }}" class="btn btn-primary btn-lg active" role="button">相关性排序</a>
+                <a href="/query/{{ query }}?order=1" class="btn btn-default btn-lg active" role="button">热度排序</a>
+                <a href="/query/{{ query }}?order=2" class="btn btn-default btn-lg active" role="button">时间排序</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            {% if results %}
+
+            <h6> 共{{ resultCount }}条结果，用时{{ sTime }}秒</h6>
+
+
+            <ul>
+                {% for r in results %}
+                <h2><a href="/news/{{ r.id }}"> {{ r.title }} </a></h2>
+                <a href="{{ r.url }}">{{ r.url }}</a>
+                <h4>来源：{{ r.source }} {{ r.reportTime }} 评论:{{ r.hot }}</h4>
+                <tr><p>{{ r.content[:100] }}</p></tr>
+                {% endfor %}
+            </ul>
+
+            {% else %}
+
+            <p>没有搜索结果</p>
+
+            {% endif %}
+
+
+        </div>
+
+
+        <div class="col-md-4">
+            {% if related %}
+
+            <h3>相关搜索</h3>
+
+            {% for r in related %}
+            <p><a href="/query/{{ r }}">{{ r }}</a></p>
+            {% endfor %}
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock  %}

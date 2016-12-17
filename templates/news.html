@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>{{ news.title }}</h1>
+<h4><a href="{{ news.url }}">{{ news.url }}</a></h4>
+<h4> {{ news.source }}  {{ news.reportTime }} {{ news.hot }}</h4>
+
+<p>{{ news.content }}</p>
+
+
+<h4>相似新闻</h4>
+{% for r in related %}
+<h5><a href="/news/{{ r.id }}">{{ r.title }}</a></h5>
+{% endfor %}
+
+{% endblock  %}
