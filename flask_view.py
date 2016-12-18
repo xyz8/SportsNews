@@ -49,6 +49,13 @@ def news(id):
         return render_template("news.html", news=news, related=related)
     return render_template("index.html")
 
+@app.route('/complete/',methods=['POST'])
+def start_complete():
+    query = request.get_data()
+    print("query:",query)
+
+    candidates = searcher.getCompleteCandidate(query,5)
+    return candidates
 
 if __name__ == '__main__':
     app.run()
