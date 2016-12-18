@@ -7,10 +7,27 @@
 
 
 {% block scripts %}
-<script>
+<script type="text/javascript">
     function query(){
         val=$("#input").val();
         window.location.href="/query/"+val;
+    }
+    function  start_query(){
+        if (event.keyCode == "13") {//keyCode=13是回车键
+                     $('#button').click();
+                 }
+    }
+
+    function start_complete(value){
+        alert(value);
+        $.ajax({
+                url: "/complete/",
+                method:"post",
+                data: value,
+                success: function (data) {
+
+             }
+    });
     }
 
 $(function(){
@@ -31,11 +48,6 @@ $('#input').typeahead(null, {
 });
 });
 
-
-
-
-
-
 </script>
 
 {% endblock %}
@@ -48,9 +60,12 @@ $('#input').typeahead(null, {
 
 
     <div class="row">
-        <div class="col-md-8">
-            <div>
-                <input id="input"  type="text" class="typeahead" value="{{ query }}">
+        <div class="col-md-10">
+            <div class="input-group">
+                <input id="input" type="text" onkeydown="start_query()" onpropertychange="start_complete(this.value)" class="form-control" value="{{ query }}" list = "candidate">
+                <datalist id = "candidate">
+
+                </datalist>
                 <span class="input-group-btn">
                       <button id="button" class="btn btn-default" type="button" onclick="query()">搜索</button>
                     </span>
