@@ -1,11 +1,40 @@
 {% extends "layout.html" %}
 
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+
+
 {% block scripts %}
 <script>
     function query(){
         val=$("#input").val();
         window.location.href="/query/"+val;
     }
+
+$(function(){
+    var bestPictures = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 'https://twitter.github.io/typeahead.js/data/films/post_1960.json',
+  remote: {
+    url: '.https://twitter.github.io/typeahead.js/data/films/queries/%QUERY.json',
+    wildcard: '%QUERY'
+  }
+});
+
+$('#input').typeahead(null, {
+  name: 'best-pictures',
+  display: 'value',
+  source: bestPictures
+});
+});
+
+
+
+
+
 
 </script>
 
@@ -19,19 +48,20 @@
 
 
     <div class="row">
-        <div class="col-md-10">
-            <div class="input-group">
-                <input id="input" type="text" class="form-control" value="{{ query }}">
+        <div class="col-md-8">
+            <div>
+                <input id="input"  type="text" class="typeahead" value="{{ query }}">
                 <span class="input-group-btn">
                       <button id="button" class="btn btn-default" type="button" onclick="query()">搜索</button>
                     </span>
             </div>
             <div class="input-group">
-                <a href="/query/{{ query }}" class="btn btn-primary btn-lg active" role="button">相关性排序</a>
-                <a href="/query/{{ query }}?order=1" class="btn btn-default btn-lg active" role="button">热度排序</a>
-                <a href="/query/{{ query }}?order=2" class="btn btn-default btn-lg active" role="button">时间排序</a>
+                <a href="/query/{{ query }}" class="btn btn-primary active" role="button">相关性排序</a>
+                <a href="/query/{{ query }}?order=1" class="btn btn-default active" role="button">热度排序</a>
+                <a href="/query/{{ query }}?order=2" class="btn btn-default active" role="button">时间排序</a>
             </div>
         </div>
+        <div class="col-md-2">
     </div>
 
     <div class="row">
