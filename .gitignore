@@ -5,3 +5,9 @@ search_results.html
 .idea/
 terms_sorted_by_df.txt
 terms_sorted_by_tf-idf.txt
+
+__pycache__
+doc_similar_dict.bin
+newsDic
+postingList
+word2vec.model
