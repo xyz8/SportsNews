@@ -24,6 +24,11 @@ docCount = len(documents)
 
 length = 0
 lengthTitle = 0
+
+# 标题和正文权重
+weightTitle = 0.7
+weightContent = 0.3
+
 for doc in documents.keys():
     length += documents[doc]['contentLen']
     lengthTitle += documents[doc]['titleLen']
@@ -68,9 +73,7 @@ def search(query, postingList=postingList, terms=terms, documents=documents, doc
     # BM25参数
     k1 = 2
     b = 0.75
-    # 标题和正文权重
-    weightTitle = 0.7
-    weightContent = 0.3
+
 
     resultList = {}
     for term in query_match_terms:
@@ -104,6 +107,8 @@ def search(query, postingList=postingList, terms=terms, documents=documents, doc
     search_end = time.time()
     search_time = (search_end - search_start)
     return resultList, search_time
+
+
 
 
 # 按热度排序
@@ -182,6 +187,25 @@ def searchByTime(query, postingList=postingList, terms=terms, documents=document
     return resultList, search_time
 
 
+# 获得自动补全候选集合, num 为候选集合最大位数
+def getCompleteCandidate(query,num):
+    query_terms = tokenlize(query.strip())
+    last_term = query_terms[-1]
+    prefix_list = []
+    # 从词典寻找查询的最后一个词充当前缀的所有词
+    for term in terms:
+        if term.find(last_term)==0 and last_term!=term:
+            df = postingList[term]['df'][0] * weightTitle + postingList[term]['df'][1] * weightContent
+            prefix_list.append([term,df])
+    # 对df进行降序排序
+    prefix_list = sorted(prefix_list,key=lambda x: x[1],reverse=True)
+    if len(prefix_list) > num:
+        prefix_list = prefix_list[:num]
+
+    # 构造候选集合
+    candidates = list(map(lambda x:''.join(query_terms[:-1])+x[0],prefix_list))
+    return candidates
+
 if __name__ == '__main__':
     # documents = handle_news.loadNewsDict()
     # postingList = indexer.loadPostingList()
@@ -191,7 +215,10 @@ if __name__ == '__main__':
     #     length += documents[doc]['contentLen']
     # docAveLen = length / len(documents)
 
-    query = "詹姆斯"
+
+    query = "这个赛季詹"
 
     result = search(query, postingList, postingList.keys(), documents, len(documents), docAveLen, False)
     print(result)
+
+
