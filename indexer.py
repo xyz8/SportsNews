@@ -3,7 +3,7 @@
 import json
 import pickle
 import time
-
+import math
 
 # 构建倒排记录表
 def set_ivs_index(debug=False):
@@ -80,14 +80,12 @@ def set_ivs_index(debug=False):
 
 
 # pickle序列化保存倒排记录表
-
 def savePostingList(posting):
     pickle.dump(posting, open("postingList", "wb"), True)
 
 
 def loadPostingList():
     return pickle.load(open("postingList", "rb"))
-
 
 if __name__ == '__main__':
     postingList = set_ivs_index(debug=True)

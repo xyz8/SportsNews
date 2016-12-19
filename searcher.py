@@ -68,12 +68,11 @@ def search(query, postingList=postingList, terms=terms, documents=documents, doc
 
     if query_match_terms == []:
         query_results.append('No related news.')
-        return
+        return [], 0.0
 
     # BM25参数
     k1 = 2
     b = 0.75
-
 
     resultList = {}
     for term in query_match_terms:
@@ -105,10 +104,8 @@ def search(query, postingList=postingList, terms=terms, documents=documents, doc
     resultList = list(map(lambda x: x[0], resultList))
 
     search_end = time.time()
-    search_time = (search_end - search_start)
+    search_time = "%.4f" % (search_end - search_start)
     return resultList, search_time
-
-
 
 
 # 按热度排序
@@ -123,6 +120,10 @@ def searchByHot(query, postingList=postingList, terms=terms, documents=documents
     for query_term in query_terms:
         if query_term in terms:
             query_match_terms.append(query_term)
+
+    if query_match_terms == []:
+        query_results.append('No related news.')
+        return [], 0.0
 
     resultDocs = []
     for term in query_match_terms:
@@ -149,7 +150,7 @@ def searchByHot(query, postingList=postingList, terms=terms, documents=documents
     resultList = list(map(lambda x: x[0], resultList))
 
     search_end = time.time()
-    search_time = (search_end - search_start)
+    search_time = "%.4f" % (search_end - search_start)
     return resultList, search_time
 
 
@@ -165,6 +166,10 @@ def searchByTime(query, postingList=postingList, terms=terms, documents=document
     for query_term in query_terms:
         if query_term in terms:
             query_match_terms.append(query_term)
+
+    if query_match_terms == []:
+        query_results.append('No related news.')
+        return [], 0.0
 
     resultDocs = []
     for term in query_match_terms:
@@ -183,28 +188,29 @@ def searchByTime(query, postingList=postingList, terms=terms, documents=document
     resultList = list(map(lambda x: x[0], resultList))
 
     search_end = time.time()
-    search_time = (search_end - search_start)
+    search_time = "%.4f" % (search_end - search_start)
     return resultList, search_time
 
 
 # 获得自动补全候选集合, num 为候选集合最大位数
-def getCompleteCandidate(query,num):
+def getCompleteCandidate(query, num):
     query_terms = tokenlize(query.strip())
     last_term = query_terms[-1]
     prefix_list = []
     # 从词典寻找查询的最后一个词充当前缀的所有词
     for term in terms:
-        if term.find(last_term)==0 and last_term!=term:
+        if term.find(last_term) == 0 and last_term != term:
             df = postingList[term]['df'][0] * weightTitle + postingList[term]['df'][1] * weightContent
-            prefix_list.append([term,df])
+            prefix_list.append([term, df])
     # 对df进行降序排序
-    prefix_list = sorted(prefix_list,key=lambda x: x[1],reverse=True)
+    prefix_list = sorted(prefix_list, key=lambda x: x[1], reverse=True)
     if len(prefix_list) > num:
         prefix_list = prefix_list[:num]
 
     # 构造候选集合
-    candidates = list(map(lambda x:''.join(query_terms[:-1])+x[0],prefix_list))
+    candidates = list(map(lambda x: ''.join(query_terms[:-1]) + x[0], prefix_list))
     return candidates
+
 
 if __name__ == '__main__':
     # documents = handle_news.loadNewsDict()
@@ -220,5 +226,3 @@ if __name__ == '__main__':
 
     result = search(query, postingList, postingList.keys(), documents, len(documents), docAveLen, False)
     print(result)
-
-
