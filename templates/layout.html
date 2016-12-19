@@ -10,37 +10,36 @@
     <title>新闻搜索</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="http://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet">
+    <link href="http://bootswatch.com/yeti/bootstrap.min.css" rel="stylesheet">
     <link href="http://bootswatch.com/assets/css/custom.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
     <!-- Custom styles for this template -->
 
 
     {% block styles %} {% endblock %}
-
-    {% block scripts %} {% endblock %}
 
 
 </head>
 
 <body>
 <!--<div class="navbar navbar-default navbar-fixed-top">-->
-    <!--<div class="container">-->
-        <!--<div class="navbar-header">-->
-            <!--<a href="../" class="navbar-brand">新闻搜索</a>-->
-            <!--<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">-->
-                <!--<span class="icon-bar"></span>-->
-                <!--<span class="icon-bar"></span>-->
-                <!--<span class="icon-bar"></span>-->
-            <!--</button>-->
-        <!--</div>-->
-        <!--<div class="navbar-collapse collapse" id="navbar-main">-->
-            <!--<ul class="nav navbar-nav">-->
-                <!--<li>-->
-                    <!--<a class="active" href="/index">首页</a>-->
-                <!--</li>-->
-            <!--</ul>-->
-        <!--</div>-->
-    <!--</div>-->
+<!--<div class="container">-->
+<!--<div class="navbar-header">-->
+<!--<a href="../" class="navbar-brand">新闻搜索</a>-->
+<!--<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">-->
+<!--<span class="icon-bar"></span>-->
+<!--<span class="icon-bar"></span>-->
+<!--<span class="icon-bar"></span>-->
+<!--</button>-->
+<!--</div>-->
+<!--<div class="navbar-collapse collapse" id="navbar-main">-->
+<!--<ul class="nav navbar-nav">-->
+<!--<li>-->
+<!--<a class="active" href="/index">首页</a>-->
+<!--</li>-->
+<!--</ul>-->
+<!--</div>-->
+<!--</div>-->
 <!--</div>-->
 
 {% block content %} {% endblock %}
@@ -50,5 +49,38 @@
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="{{ url_for('static', filename='typeahead.js') }}"></script>
+
+<script type="text/javascript">
+    function query(){
+        val=$("#input").val();
+        window.location.href="/query/"+val;
+    }
+$(function() {
+        //给input绑定按键事件
+        $('#input').bind('keypress',function(event){
+            if(event.keyCode == "13"){
+                $('#button').click();
+            }
+        });
+        // 输入提示 typeahead
+        $('#input').typeahead({
+            source: function(query, process) {
+                $.ajax({
+                    url: '/complete/'+query,
+                    dataType: 'JSON',
+                    async: false,
+                    success: function(data) {
+                        process(data);
+                    }
+                });
+            }
+        });
+});
+</script>
+
+
+{% block scripts %} {% endblock %}
+
 </body>
 </html>

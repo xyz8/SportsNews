@@ -2,16 +2,35 @@
 
 {% block content %}
 
-<h1>{{ news.title }}</h1>
-<h4><a href="{{ news.url }}">{{ news.url }}</a></h4>
-<h4> {{ news.source }}  {{ news.reportTime }} {{ news.hot }}</h4>
 
-<p>{{ news.content }}</p>
+<div class="container">
 
+    <div class="row">
+        <h1>{{ news.title }}</h1>
+        <h4><a href="{{ news.url }}">{{ news.url }}</a></h4>
+        <h4>
+            <span class="label label-info"> {{ news.source }}</span>
+            <span class="label label-info"> {{ news.category }}</span>
+            <span class="label label-info">{{ news.reportTime }}</span>
+            <span class="label label-info">{{ news.hot }}</span></h4>
+        <hr/>
+        <p>{{ news.content }}</p>
+        <hr/>
 
-<h4>相似新闻</h4>
-{% for r in related %}
-<h5><a href="/news/{{ r.id }}">{{ r.title }}</a></h5>
-{% endfor %}
+        <h4> 关键词 :
+        {% for keyword in news.keyword.split() %}
+        <span class="label label-info"> {{ keyword }}</span>
+        {% endfor %}
+        </h4>
+
+        <hr/>
+        <h4>相似新闻</h4>
+        {% for r in related %}
+        <h5><a href="/news/{{ r.id }}">{{ r.title }}</a></h5>
+        {% endfor %}
+
+    </div>
+
+</div>
 
 {% endblock  %}

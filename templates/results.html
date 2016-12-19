@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+
+{% block styles %}
+{% endblock %}
+
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="input-group">
+                <input id="input" type="text" class="form-control" value="{{ query }}" autocomplete="off"
+                       data-provide="typeahead">
+                <span class="input-group-btn">
+                      <button id="button" class="btn btn-default" type="button" onclick="query()">搜索</button>
+                </span>
+            </div>
+
+
+            {% if results %}
+
+            <div>
+
+                <div id="sort_left">共<strong>{{ resultCount }}</strong>条结果，用时<strong>{{ sTime }}</strong>秒</div>
+
+                <div class="btn-group btn-group-xs" id="sort_right">
+                    <a href="/query/{{ query }}" class="btn btn-{{ sortClass[0] }}" role="button">相关性排序</a>
+                    <a href="/query/{{ query }}?order=1" class="btn btn-{{ sortClass[1] }}" role="button">热度排序</a>
+                    <a href="/query/{{ query }}?order=2" class="btn btn-{{ sortClass[2] }}" role="button">时间排序</a>
+                </div>
+
+            </div>
+            {% endif %}
+
+
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-9">
+            {% if results %}
+            {% for r in results %}
+            <h2><a href="/news/{{ r.id }}"> {{ r.title }} </a></h2>
+            <a href="{{ r.url }}">{{ r.url }}</a>
+            <h4>
+                <span class="label label-success">{{ r.source }}</span> <span class="label label-success">{{ r.reportTime }}</span>
+            </h4>
+            <p>{{ r.content[:100] }}</p>
+            <hr/>
+            {% endfor %}
+
+
+            <nav>
+                <ul class="pagination pagination-lg">
+                    {% if pageDict['hasPre'] %}
+                    <li><a href="/query/{{ query }}?order={{ order }}&page={{ pageDict['current']-1 }}">上一页</a></li>
+                    {% endif %}
+                    {% for i in pageDict['pages'] %}
+                    {% if i==pageDict['current'] %}
+                    <li class="active"><a href="/query/{{ query }}?order={{ order }}&page={{ i }}">{{ i }} <span
+                            class="sr-only">(current)</span></a></li>
+                    {% else %}
+                    <li><a href="/query/{{ query }}?order={{ order }}&page={{ i }}">{{ i }}</span></a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if pageDict['hasNext'] %}
+                    <li><a href="/query/{{ query }}?order={{ order }}&page={{ pageDict['current']+1 }}">下一页</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% else %}
+            <h3>抱歉，没有找到与“<em>{{ query }}”</em>相关的新闻内容。</h3>
+            {% endif %}
+
+
+        </div>
+
+
+        <div class="col-md-3">
+            {% if related %}
+
+            <h3>相关搜索</h3>
+
+            {% for r in related %}
+            <p><a href="/query/{{ r }}">{{ r }}</a></p>
+            {% endfor %}
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

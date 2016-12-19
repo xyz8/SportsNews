@@ -4,7 +4,6 @@ import jieba
 import pickle
 import time
 
-
 # 把新闻分词后 保存
 def segWords():
     count = 0
@@ -68,7 +67,7 @@ def saveNewsDict():
             newsDic[id]['reportTime'] = report_time
             newsDic[id]['source'] = source
             newsDic[id]['url'] = url
-            newsDic[id]['hot（'] = hot
+            newsDic[id]['hot'] = hot
             newsDic[id]['crawl_time'] = crawl_time
             newsDic[id]['keyword'] = keyword
             newsDic[id]['category'] = category
