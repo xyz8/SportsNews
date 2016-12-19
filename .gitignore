@@ -11,3 +11,8 @@ doc_similar_dict.bin
 newsDic
 postingList
 word2vec.model
+
+all.txt
+all_seg.txt
+doc2vec.model
+

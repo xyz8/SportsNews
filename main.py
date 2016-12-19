@@ -312,20 +312,26 @@ def present_search_results(query_results,documents,debug = False):
     return query_results
 
 def main():
-    jieba.initialize()
-    doc2json("hupu_news.txt", "json_file.txt")
-    doc = getJson("json_file.txt")
+    jieba.initialize()                              # 加载分词模块
+    doc2json("hupu_news.txt", "json_file.txt")      # 把新闻文件转化成json格式，方便操作
+    doc = getJson("json_file.txt")                  # 读取json文件
 
-    query = " "
-    rvs_index_path = 'rvs_index.txt'
-    rvs_index_table, terms, terms_index = read_rvs_index(rvs_index_path)
-    # find_stop_wd(rvs_index_table, terms, terms_index,doc_num=int(doc['doc_len']), debug=True)
-    query_results = search(query, rvs_index_table, terms, terms_index,debug=False)
-    present_search_results(query_results,doc,debug = False)
+    query = "詹姆斯"                                                                    # 查询语句
+    rvs_index_path = 'rvs_index.txt'                                                    # 倒排索引路径
 
-    # # cProfile.run("search(query, rvs_index_path, doc)")
-    # dict, rvs_record_table = set_ivs_index(doc ,threshold = 0,debug = False)
-    # persist_rvs_index(dict,rvs_record_table, "rvs_index.txt", debug=True)
+    # dict, rvs_record_table = set_ivs_index(doc ,threshold = 0,debug = False)          # 生成倒排索引
+    # persist_rvs_index(dict,rvs_record_table, "rvs_index.txt", debug=True)             # 倒排索引持久化
 
+
+    rvs_index_table, terms, terms_index = read_rvs_index(rvs_index_path)                # 读取倒排索引
+    # find_stop_wd(rvs_index_table, terms, terms_index,doc_num=int(doc['doc_len']), debug=True)         # 寻找停用词，暂时不用
+    query_results = search(query, rvs_index_table, terms, terms_index,debug=False)      # 生成查询结果
+    present_search_results(query_results,doc,debug = False)                             # 展示查询结果
+
+
+
+
+
+    # # cProfile.run("search(query, rvs_index_path, doc)")                              # 性能测试
 if __name__ == "__main__":
     main()
