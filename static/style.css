@@ -7,3 +7,7 @@ float:right;
 margin-top:15px;
 float:left;
 }
+
+.marked {
+    color: red;
+}

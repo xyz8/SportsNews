@@ -6,7 +6,10 @@
 <div class="container">
 
     <div class="row">
+
+        {% autoescape false %}
         <h1>{{ news.title }}</h1>
+        {% endautoescape %}
         <h4><a href="{{ news.url }}">{{ news.url }}</a></h4>
         <h4>
             <span class="label label-info"> {{ news.source }}</span>
@@ -14,7 +17,9 @@
             <span class="label label-info">{{ news.reportTime }}</span>
             <span class="label label-info">{{ news.hot }}</span></h4>
         <hr/>
+        {% autoescape false %}
         <p>{{ news.content }}</p>
+        {% endautoescape %}
         <hr/>
 
         <h4> 关键词 :

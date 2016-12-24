@@ -49,12 +49,16 @@
         <div class="col-md-9">
             {% if results %}
             {% for r in results %}
-            <h2><a href="/news/{{ r.id }}"> {{ r.title }} </a></h2>
+            {% autoescape false %}
+            <h2><a href="/news/{{ r.id }}"> {{ r.title  }} </a></h2>
+            {% endautoescape %}
             <a href="{{ r.url }}">{{ r.url }}</a>
             <h4>
                 <span class="label label-success">{{ r.source }}</span> <span class="label label-success">{{ r.reportTime }}</span>
             </h4>
-            <p>{{ r.content[:100] }}</p>
+            {% autoescape false %}
+            <p>{{ r.summery }}</p>
+            {% endautoescape %}
             <hr/>
             {% endfor %}
 

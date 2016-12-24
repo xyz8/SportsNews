@@ -8,6 +8,9 @@ import jieba
 import re
 import math
 
+
+
+
 '''
 '''
 # 所有新闻
@@ -46,7 +49,6 @@ def tokenlize(document):
         if term != "":
             term_list.append(term)
     return term_list
-
 
 def search(query, postingList=postingList, terms=terms, documents=documents, docCount=docCount, docAveLength=docAveLen,
            titleAveLength=titleAveLen, debug=False):
@@ -225,4 +227,5 @@ if __name__ == '__main__':
     query = "这个赛季詹"
 
     result = search(query, postingList, postingList.keys(), documents, len(documents), docAveLen, False)
+
     print(result)

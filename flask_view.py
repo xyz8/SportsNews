@@ -7,12 +7,13 @@ import pickle
 import correlation
 import json
 import math
+import summery as sm
 
 app = Flask(__name__)
 
 jieba.initialize()
 pageSize = 10
-
+summery_wnd = 10
 
 @app.route('/')
 @app.route('/query/')
@@ -24,7 +25,6 @@ def search(query=None):
 
     if query != "" and query != None:
         terms = searcher.tokenlize(query)
-
         print(terms)
 
         if order == '0':
@@ -33,11 +33,12 @@ def search(query=None):
             docs, sTime = searcher.searchByHot(terms)
         elif order == '2':
             docs, sTime = searcher.searchByTime(terms)
+
         results = []
         related = correlation.getSimilarWords(terms)
         if docs != None:
             for id in docs:
-                results.append(searcher.documents[id])
+                results.append(searcher.documents[id].copy())
             resultCount = len(results)
             # 分页
             start = (page - 1) * pageSize
@@ -47,10 +48,18 @@ def search(query=None):
 
         sortClass = ['default', 'default', 'default']
         sortClass[int(order)] = 'primary'
-        return render_template("results.html", results=results, related=related, resultCount=resultCount, sTime=sTime,
-                               query=query, sortClass=sortClass, pageDict=pageDict, order=order)
-    return render_template("index.html")
+        index=0
+        for result in results:
+            summery = sm.get_summery(result['content'], summery_wnd, query)
+            result['summery'] = sm.mark(summery, terms)
 
+            result['title'] = sm.mark(result['title'], terms)
+            result['content'] = sm.mark(result['content'], terms)
+
+
+        return render_template("results.html", results=results, related=related, resultCount=resultCount, sTime=sTime,
+                               query=query, sortClass=sortClass, pageDict=pageDict, order=order, terms = terms)
+    return render_template("index.html")
 
 def setPage(total, current):
     pageSize = 10
@@ -80,12 +89,13 @@ def setPage(total, current):
 @app.route('/news/<id>')
 def news(id):
     news = searcher.documents.get(id, 0)
+
     if news != 0:
         related = []
         similarDocs = correlation.getSimilarDocs(id)
         for docId in similarDocs:
             related.append(searcher.documents[docId])
-        print(similarDocs)
+        # print(similarDocs)
         return render_template("news.html", news=news, related=related)
     return render_template("index.html")
 
