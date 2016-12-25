@@ -50,7 +50,7 @@
             {% if results %}
             {% for r in results %}
             {% autoescape false %}
-            <h2><a href="/news/{{ r.id }}"> {{ r.title  }} </a></h2>
+            <h2><a href="/news/{{ r.id }}/{{ query }}"> {{ r.title }} </a></h2>
             {% endautoescape %}
             <a href="{{ r.url }}">{{ r.url }}</a>
             <h4>

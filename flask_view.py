@@ -15,6 +15,7 @@ jieba.initialize()
 pageSize = 10
 summery_wnd = 10
 
+
 @app.route('/')
 @app.route('/query/')
 @app.route('/query/<query>')
@@ -48,18 +49,18 @@ def search(query=None):
 
         sortClass = ['default', 'default', 'default']
         sortClass[int(order)] = 'primary'
-        index=0
+        index = 0
         for result in results:
             summery = sm.get_summery(result['content'], summery_wnd, query)
-            result['summery'] = sm.mark(summery, terms)
+            result['summery'] = sm.mark(summery, query)
 
-            result['title'] = sm.mark(result['title'], terms)
-            result['content'] = sm.mark(result['content'], terms)
-
+            result['title'] = sm.mark(result['title'], query)
+            result['content'] = sm.mark(result['content'], query)
 
         return render_template("results.html", results=results, related=related, resultCount=resultCount, sTime=sTime,
-                               query=query, sortClass=sortClass, pageDict=pageDict, order=order, terms = terms)
+                               query=query, sortClass=sortClass, pageDict=pageDict, order=order, terms=terms)
     return render_template("index.html")
+
 
 def setPage(total, current):
     pageSize = 10
@@ -85,18 +86,38 @@ def setPage(total, current):
     pageDict['pages'] = list(range(start, end + 1))
     return pageDict
 
-
 @app.route('/news/<id>')
 def news(id):
-    news = searcher.documents.get(id, 0)
+    news = searcher.documents.get(id, 0).copy()
 
     if news != 0:
         related = []
         similarDocs = correlation.getSimilarDocs(id)
         for docId in similarDocs:
-            related.append(searcher.documents[docId])
+            related.append(searcher.documents[docId].copy())
+
         # print(similarDocs)
         return render_template("news.html", news=news, related=related)
+    return render_template("index.html")
+
+@app.route('/news/<id>/<query>')
+def news_from_query(id,query):
+    news = searcher.documents.get(id, 0).copy()
+    news['title'] = sm.mark(news['title'], query)
+    news['content'] = sm.mark(news['content'], query)
+
+    if news != 0:
+        related = []
+        similarDocs = correlation.getSimilarDocs(id)
+        for docId in similarDocs:
+            related.append(searcher.documents[docId].copy())
+
+        # mark
+        for r in related:
+            r['title'] = sm.mark(r['title'], query)
+            r['content'] = sm.mark(r['content'], query)
+        # print(similarDocs)
+        return render_template("news.html", news=news, related=related, query=query)
     return render_template("index.html")
 
 

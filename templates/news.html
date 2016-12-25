@@ -23,15 +23,22 @@
         <hr/>
 
         <h4> 关键词 :
-        {% for keyword in news.keyword.split() %}
-        <span class="label label-info"> {{ keyword }}</span>
-        {% endfor %}
+            {% for keyword in news.keyword.split() %}
+            <a href = "/query/{{ keyword }}" class="label label-info">{{ keyword }}</a>
+            {% endfor %}
         </h4>
 
         <hr/>
         <h4>相似新闻</h4>
         {% for r in related %}
+        {% autoescape false %}
+        {% if query!=None %}
+        <h5><a href="/news/{{ r.id }}/{{ query }}">{{ r.title }}</a></h5>
+        {% else %}
         <h5><a href="/news/{{ r.id }}">{{ r.title }}</a></h5>
+        {% endif %}
+
+        {% endautoescape %}
         {% endfor %}
 
     </div>

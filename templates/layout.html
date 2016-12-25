@@ -52,31 +52,31 @@
 <script src="{{ url_for('static', filename='typeahead.js') }}"></script>
 
 <script type="text/javascript">
-    function query(){
-        val=$("#input").val();
-        window.location.href="/query/"+val;
+    function query() {
+        val = $("#input").val();
+        window.location.href = "/query/" + val;
     }
-$(function() {
+    $(function () {
         //给input绑定按键事件
-        $('#input').bind('keypress',function(event){
-            if(event.keyCode == "13"){
+        $('#input').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
                 $('#button').click();
             }
         });
         // 输入提示 typeahead
         $('#input').typeahead({
-            source: function(query, process) {
+            source: function (query, process) {
                 $.ajax({
-                    url: '/complete/'+query,
+                    url: '/complete/' + query,
                     dataType: 'JSON',
                     async: false,
-                    success: function(data) {
+                    success: function (data) {
                         process(data);
                     }
                 });
             }
         });
-});
+    });
 </script>
 
 
